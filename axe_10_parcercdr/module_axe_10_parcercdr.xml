@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_axe_10_parcercdr" default="compile.module.axe_10_parcercdr">
+  <dirname property="module.axe_10_parcercdr.basedir" file="${ant.file.module_axe_10_parcercdr}"/>
+  
+  <property name="module.jdk.home.axe_10_parcercdr" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.axe_10_parcercdr" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.axe_10_parcercdr" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.axe_10_parcercdr" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="axe_10_parcercdr.output.dir" value="${module.axe_10_parcercdr.basedir}/target/classes"/>
+  <property name="axe_10_parcercdr.testoutput.dir" value="${module.axe_10_parcercdr.basedir}/target/test-classes"/>
+  
+  <path id="axe_10_parcercdr.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="axe_10_parcercdr.module.production.classpath">
+    <path refid="${module.jdk.classpath.axe_10_parcercdr}"/>
+    <path refid="library.maven:_commons-net:commons-net:3.6.classpath"/>
+  </path>
+  
+  <path id="axe_10_parcercdr.runtime.production.module.classpath">
+    <pathelement location="${axe_10_parcercdr.output.dir}"/>
+    <path refid="library.maven:_commons-net:commons-net:3.6.classpath"/>
+  </path>
+  
+  <path id="axe_10_parcercdr.module.classpath">
+    <path refid="${module.jdk.classpath.axe_10_parcercdr}"/>
+    <pathelement location="${axe_10_parcercdr.output.dir}"/>
+    <path refid="library.maven:_commons-net:commons-net:3.6.classpath"/>
+  </path>
+  
+  <path id="axe_10_parcercdr.runtime.module.classpath">
+    <pathelement location="${axe_10_parcercdr.testoutput.dir}"/>
+    <pathelement location="${axe_10_parcercdr.output.dir}"/>
+    <path refid="library.maven:_commons-net:commons-net:3.6.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.axe_10_parcercdr">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.axe_10_parcercdr">
+    <patternset refid="excluded.from.module.axe_10_parcercdr"/>
+  </patternset>
+  
+  <path id="axe_10_parcercdr.module.sourcepath">
+    <dirset dir="${module.axe_10_parcercdr.basedir}">
+      <include name="src/main/java"/>
+      <include name="src/main/resources"/>
+    </dirset>
+  </path>
+  
+  <path id="axe_10_parcercdr.module.test.sourcepath">
+    <dirset dir="${module.axe_10_parcercdr.basedir}">
+      <include name="src/test/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.axe_10_parcercdr" depends="compile.module.axe_10_parcercdr.production,compile.module.axe_10_parcercdr.tests" description="Compile module axe_10_parcercdr"/>
+  
+  <target name="compile.module.axe_10_parcercdr.production" depends="register.custom.compilers" description="Compile module axe_10_parcercdr; production classes">
+    <mkdir dir="${axe_10_parcercdr.output.dir}"/>
+    <javac2 destdir="${axe_10_parcercdr.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.axe_10_parcercdr}/javac">
+      <compilerarg line="${compiler.args.axe_10_parcercdr}"/>
+      <bootclasspath refid="axe_10_parcercdr.module.bootclasspath"/>
+      <classpath refid="axe_10_parcercdr.module.production.classpath"/>
+      <src refid="axe_10_parcercdr.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.axe_10_parcercdr"/>
+    </javac2>
+    
+    <copy todir="${axe_10_parcercdr.output.dir}">
+      <fileset dir="${module.axe_10_parcercdr.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.axe_10_parcercdr.basedir}/src/main/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.axe_10_parcercdr.tests" depends="register.custom.compilers,compile.module.axe_10_parcercdr.production" description="compile module axe_10_parcercdr; test classes" unless="skip.tests">
+    <mkdir dir="${axe_10_parcercdr.testoutput.dir}"/>
+    <javac2 destdir="${axe_10_parcercdr.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.axe_10_parcercdr}/javac">
+      <compilerarg line="${compiler.args.axe_10_parcercdr}"/>
+      <bootclasspath refid="axe_10_parcercdr.module.bootclasspath"/>
+      <classpath refid="axe_10_parcercdr.module.classpath"/>
+      <src refid="axe_10_parcercdr.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.axe_10_parcercdr"/>
+    </javac2>
+    
+    <copy todir="${axe_10_parcercdr.testoutput.dir}">
+      <fileset dir="${module.axe_10_parcercdr.basedir}/src/test/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.axe_10_parcercdr" description="cleanup module">
+    <delete dir="${axe_10_parcercdr.output.dir}"/>
+    <delete dir="${axe_10_parcercdr.testoutput.dir}"/>
+  </target>
+</project>
