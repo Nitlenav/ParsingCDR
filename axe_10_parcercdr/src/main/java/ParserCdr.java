@@ -9,9 +9,10 @@ import java.util.Locale;
 
 public class ParserCdr {
     private String a;
-    //private int num = 0;
+    private int countNum = 10;
     private boolean sig = true;
-    private StringBuffer bufer;
+    private StringBuilder bufer;
+    private StringBuffer csvFile;
     private String signal = "";
     private String listword;
     private String numbe = "";
@@ -22,20 +23,12 @@ public class ParserCdr {
 
     private int numStart = 0;
     private int numEnd = 0;
+    private List<StringBuffer> stringNumber;
+    private PrintWriter printCSV;
 
-    //private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-    private File fileIn;
-    //private String filePath = "E:\\AXE\\";
-    //private String fileName = filePath + fileIn.getName() + "_" + sdf.format(System.currentTimeMillis()) + ".csv";
-    private List<StringBuffer> stringNumber = new ArrayList<StringBuffer>();
-
-    public void setFileIn(File fileIn) {
-        this.fileIn = fileIn;
-    }
-
-    public void readFile() {
-        bufer = new StringBuffer();
-        try (BufferedReader buf = new BufferedReader(new InputStreamReader(new FileInputStream(this.fileIn), "UTF-8"))) {
+    public void readFile(File fileIn) {
+        bufer = new StringBuilder("");
+        try (BufferedReader buf = new BufferedReader(new InputStreamReader(new FileInputStream(fileIn), "UTF-8"))) {
             while ((a = buf.readLine()) != null) {
                 byte[] b = a.getBytes();
                 for (byte by : b) {
@@ -57,7 +50,9 @@ public class ParserCdr {
     }
 
     public void parsingString(String fileName) {
-
+        stringNumber = new ArrayList<StringBuffer>();
+        csvFile = new StringBuffer();
+        sig = true;
         try {
             listword = bufer.toString();
             while (sig) {
@@ -84,7 +79,6 @@ public class ParserCdr {
                 switch (signal) {
                     case "00":
                         sig = true;
-                        //numEnd = 258;
                         numEnd = listword.length() >= 258 ? 258 : listword.length();
                         word = listword.substring(numStart, numEnd);
                         listword = listword.substring(numEnd, listword.length());
@@ -92,7 +86,6 @@ public class ParserCdr {
                         break;
                     case "02":
                         sig = true;
-                        //numEnd = 300;
                         numEnd = listword.length() >= 300 ? 300 : listword.length();
                         word = listword.substring(numStart, numEnd);
                         listword = listword.substring(numEnd, listword.length());
@@ -100,7 +93,6 @@ public class ParserCdr {
                         break;
                     case "04":
                         sig = true;
-                        //numEnd = 335;
                         numEnd = listword.length() >= 335 ? 335 : listword.length();
                         word = listword.substring(numStart, numEnd);
                         listword = listword.substring(numEnd, listword.length());
@@ -119,9 +111,7 @@ public class ParserCdr {
                 }
             }
 
-            PrintWriter printCSV = new PrintWriter(new File(fileName));
-            StringBuffer csvFile = new StringBuffer();
-
+            printCSV = new PrintWriter(new File(fileName));
             SimpleDateFormat newDateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
             SimpleDateFormat newTimeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
             Date dateFormat;
@@ -133,7 +123,6 @@ public class ParserCdr {
                 switch (signal) {
                     case "00":
                         csvFile.append(string.substring(5, 13) + ";");
-
                         try {
                             dateFormat = new SimpleDateFormat("yyMMdd").parse(string.substring(132, 138));
                             timeFormat = new SimpleDateFormat("HHmmss").parse(string.substring(138, 144));
@@ -153,15 +142,15 @@ public class ParserCdr {
                         csvFile.append(numAInter + ";");
 
                         numB = ((string.substring(48, 66)).trim()).replaceAll("F", "");
-                        numB = numB.replaceFirst("^(810|860|8)", "");
+                        //numB = numB.replaceFirst("^(860810|810|860|8)", "");
                         csvFile.append(numB + ";");
 
                         csvFile.append((string.substring(226, 233)).trim() + ";");
                         csvFile.append((string.substring(233, 240)).trim() + ";");
 
-                        numA = numA.matches("^\\d+") ? "7" + numA : numAInter;
+                        numA = numAInter.matches("^\\d+") ? "7" + numAInter : "7" + numA;
                         csvFile.append(numA + ";");
-                        numB = numB.matches("^\\d+") ? "7" + numB : numB;
+                        numB = numB.matches("^\\d+") ? (numB.length() >= countNum ? "7" + numB : "7495" + numB) : numB;
                         csvFile.append(numB + "\n");
                         break;
                     case "02":
@@ -186,15 +175,15 @@ public class ParserCdr {
                         csvFile.append(numAInter + ";");
 
                         numB = ((string.substring(48, 66)).trim()).replaceAll("F", "");
-                        numB = numB.replaceFirst("^(810|860|8)", "");
+                        //numB = numB.replaceFirst("^(860810|810|860|8)", "");
                         csvFile.append(numB + ";");
 
                         csvFile.append((string.substring(233, 240)).trim() + ";");
                         csvFile.append((string.substring(240, 247)).trim() + ";");
 
-                        numA = numA.matches("^\\d+") ? "7" + numA : numAInter;
+                        numA = numAInter.matches("^\\d+") ? "7" + numAInter : "7" + numA;
                         csvFile.append(numA + ";");
-                        numB = numB.matches("^\\d+") ? "7" + numB : numB;
+                        numB = numB.matches("^\\d+") ? (numB.length() >= countNum ? "7" + numB : "7495" + numB) : numB;
                         csvFile.append(numB + "\n");
 
                         break;
@@ -220,15 +209,15 @@ public class ParserCdr {
                         csvFile.append(numAInter + ";");
 
                         numB = ((string.substring(48, 66)).trim()).replaceAll("F", "");
-                        numB = numB.replaceFirst("^(810|860|8)", "");
+                        //numB = numB.replaceFirst("^(860810|810|860|8)", "");
                         csvFile.append(numB + ";");
 
                         csvFile.append((string.substring(270, 277)).trim() + ";");
                         csvFile.append((string.substring(277, 284)).trim() + ";");
 
-                        numA = numA.matches("^\\d+") ? "7" + numA : numAInter;
+                        numA = numAInter.matches("^\\d+") ? "7" + numAInter : "7" + numA;
                         csvFile.append(numA + ";");
-                        numB = numB.matches("^\\d+") ? "7" + numB : numB;
+                        numB = numB.matches("^\\d+") ? (numB.length() >= countNum ? "7" + numB : "7495" + numB) : numB;
                         csvFile.append(numB + "\n");
                         break;
                     case "09":
@@ -253,23 +242,23 @@ public class ParserCdr {
                         csvFile.append(numAInter + ";");
 
                         numB = ((string.substring(48, 66)).trim()).replaceAll("F", "");
-                        numB = numB.replaceFirst("^(810|860|8)", "");
+                        //numB = numB.replaceFirst("^(860810|810|860|8)", "");
                         csvFile.append(numB + ";");
 
                         csvFile.append((string.substring(233, 240)).trim() + ";");
                         csvFile.append((string.substring(240, 247)).trim() + ";");
 
-                        numA = numA.matches("^\\d+") ? "7" + numA : numAInter;
+                        numA = numAInter.matches("^\\d+") ? "7" + numAInter : "7" + numA;
                         csvFile.append(numA + ";");
-                        numB = numB.matches("^\\d+") ? "7" + numB : numB;
+                        numB = numB.matches("^\\d+") ? (numB.length() >= countNum ? "7" + numB : "7495" + numB) : numB;
                         csvFile.append(numB + "\n");
                         break;
                 }
             }
+
             printCSV.write(csvFile.toString());
             printCSV.flush();
             printCSV.close();
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

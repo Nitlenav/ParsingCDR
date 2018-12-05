@@ -1,29 +1,35 @@
 
 import java.awt.*;
-import java.io.*;
+import java.io.Console;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 public class Main {
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
     private static boolean flug = true;
+    private static String fileName;
+    private static String csvFilePath;
+    private static FindFileInPath fileInPath;
 
     public static void main(String[] args) throws IOException {
         Properties prop = new Properties();
         InputStream fileProperties = Main.class.getClassLoader().getResourceAsStream("config.properties");
-                //new FileInputStream("config.properties");
         prop.load(fileProperties);
+
         String ftpAddress = prop.getProperty("ftpAddress");
         String login = prop.getProperty("login");
         String password = prop.getProperty("password");
         String fileIn = prop.getProperty("fileIn");
         String fileOut = prop.getProperty("fileOut");
+        String changeFtpDirectory = prop.getProperty("changeFtpDirectory");
         int timePeriod = Integer.parseInt(prop.getProperty("timePeriod"));
-
-
-        final Thread mainThread = Thread.currentThread();
+        //Thread mainThread = Thread.currentThread();
+        ParserCdrAxe parserAxe = new ParserCdrAxe();
+//        ParserCdr parserCdr = new ParserCdr();
+        InputStream fileIput;
 
         //TODO Вывод данных в консоль.
         Console openConsole = System.console();
@@ -32,57 +38,37 @@ public class Main {
             Runtime.getRuntime().exec(new String[]{"cmd", "/c", "start", "cmd", "/k", "java -jar \"" + filename + "\""});
         }
 
-        Runtime.getRuntime().addShutdownHook(
-                new Thread() {
-                    public void run() {
-                        try {
-                            flug = false;
-                            mainThread.join();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-        );
-
         //TODO Авторизация на FTP сервере
-        FtpSendFile ftpSendFile = new FtpSendFile(ftpAddress, login, password);
-
-        List<String> listDeleteFile = new ArrayList<String>();
-
+        SendFileFtp sendFile = new SendFileFtp(ftpAddress, login, password);
 
         //TODO Постоянны цикл для прослушивания директории, парсинга CDR файла и отправки по FTP.
         while (flug) {
-
             try {
                 Thread.currentThread().sleep(timePeriod);
-                System.gc();
             } catch (InterruptedException e) {
-                Runtime.getRuntime().gc();
                 e.printStackTrace();
             }
 
-            FindFileInPath fileInPath = new FindFileInPath(fileIn);
+            fileInPath = new FindFileInPath(fileIn);
+
             for (File fileToProcess : fileInPath.getListPath()) {
                 if (fileToProcess.getName().matches("(\\w+)$") && fileToProcess.isFile()) {
-                    String fileName = fileToProcess.getAbsolutePath() + "_" + sdf.format(System.currentTimeMillis()) + ".csv";
-                    String csvFilePath = fileOut + "\\" + fileToProcess.getName();
-                    fileInPath.copyFile(fileToProcess.getAbsolutePath(), csvFilePath);
-                    ParserCdr parserCdr = new ParserCdr();
-                    parserCdr.setFileIn(fileToProcess);
-                    parserCdr.readFile();
-                    parserCdr.parsingString(fileName);
-                    fileInPath.deleteFile(fileToProcess.getAbsolutePath(), csvFilePath);
-
-                    ftpSendFile.setFileAddress(fileName);
-                    ftpSendFile.ftpSend();
-
-                    listDeleteFile.add(fileName);
-                }
-            }
-            for (File fileToProcess : fileInPath.getListPath()) {
-                if ((fileToProcess.getName()).matches("([^\\s]+(\\.(?i)(csv))$)") && fileToProcess.isFile()) {
-                    fileInPath.deleteFile(fileToProcess);
+                    //TODO создаём путь и имя файлов
+                    fileName = fileToProcess.getName() + "_" + sdf.format(System.currentTimeMillis()) + ".csv";
+                    csvFilePath = fileOut + "\\" + fileToProcess.getName();
+                    //TODO парсим файл CDR в CSV
+                    parserAxe.readFile(fileToProcess);
+                    parserAxe.parsingString();
+//                    parserCdr.parsingString("E:\\AXE\\" + fileName);
+                    fileIput = parserAxe.parsingString();
+                    //TODO отправка файла
+                    sendFile.ftpSend(changeFtpDirectory, fileName, fileIput);
+                    fileIput.close();
+                    sendFile.ftpDisconnect();
+                    //TODO перемещение CDR в другую директорию
+                    if (fileInPath.correctFilePath(fileToProcess.getAbsolutePath())) {
+                        fileInPath.moveFile(fileToProcess.getAbsolutePath(), csvFilePath);
+                    }
                 }
             }
         }

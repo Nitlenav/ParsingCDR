@@ -2,9 +2,12 @@
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 public class FindFileInPath {
 
@@ -14,23 +17,10 @@ public class FindFileInPath {
             listPath.addAll(Arrays.asList(file.listFiles()));
         } else {
             System.err.println("File not found in path " + this.pathFile);
-        }
+    }
         return listPath;
     }
 
-    public void copyFile(String pathFileIn, String pathFileOut) {
-        if (correctFilePath(pathFileIn) && !(correctFilePath(pathFileOut))) {
-            try {
-                Files.copy(Paths.get(pathFileIn), Paths.get(pathFileOut));
-                System.out.println("File "+ pathFileIn + " parsing and send to path " + pathFileOut + " in " + new Date());
-            } catch (IOException e) {
-                System.err.println(e);
-                e.printStackTrace();
-            }
-        }else {
-            System.out.println("File exists in directory " + pathFileOut + " "+ new Date());
-        }
-    }
 
     public boolean correctFilePath(String pathFile) {
 
@@ -42,36 +32,36 @@ public class FindFileInPath {
 
     }
 
-    public boolean deleteFile(String pathDeleteFile, String pathFileExist) {
+    public boolean moveFile(String PathFileOut, String PathFileIn) {
         boolean fileFlug = false;
-        if (correctFilePath(pathFileExist)) {
+        if (correctFilePath(PathFileOut) && !(correctFilePath(PathFileIn))) {
+            System.out.println("File " + PathFileOut + " parsing and send to path " + PathFileIn + " in " + new Date());
             try {
-                fileFlug = Files.deleteIfExists(Paths.get(pathDeleteFile));
+                Files.move(Paths.get(PathFileOut), Paths.get(PathFileIn), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
+                System.err.println(e);
+                fileFlug = false;
                 e.printStackTrace();
-                return false;
             }
+            fileFlug = true;
+        } else {
+            System.out.println("File exists in directory " + PathFileIn + " " + new Date());
+            try {
+                    Files.move(Paths.get(PathFileOut), Paths.get(PathFileIn), StandardCopyOption.ATOMIC_MOVE);
+            } catch (IOException e) {
+                System.err.println(e);
+                fileFlug = false;
+                e.printStackTrace();
+            }
+            fileFlug = true;
         }
+
         return fileFlug;
     }
-
-    public void deleteFile(File pathDeleteFile) {
-
-        //System.gc();
-        Runtime.getRuntime().gc();
-        pathDeleteFile.delete();
-        //Files.deleteIfExists(Paths.get(pathDeleteFile.getAbsolutePath()));
-//            Files.walk(Paths.get(pathDeleteFile.getAbsolutePath()) )
-//                    .sorted(Comparator.reverseOrder())
-//                    .map(Path::toFile)
-//                    .forEach(File::delete);
-    }
-
 
     private String pathFile;
     private File file;
     private List<File> listPath = new ArrayList<File>();
-
 
     public FindFileInPath(String pathFile) {
         this.pathFile = pathFile;
