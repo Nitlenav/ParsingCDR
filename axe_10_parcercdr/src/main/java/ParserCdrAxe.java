@@ -117,9 +117,6 @@ public class ParserCdrAxe {
 
         newDateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
         newTimeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-        Date dateFormat;
-        Date timeFormat;
-        Time time;
 
         for (StringBuffer string : stringNumber) {
             signal = string.substring(0, 2);
@@ -134,37 +131,6 @@ public class ParserCdrAxe {
                             48, 66,
                             226, 233,
                             233, 240);
-/*                    csvFile.append(string.substring(5, 13) + ";");
-                    try {
-                        dateFormat = new SimpleDateFormat("yyMMdd").parse(string.substring(132, 138));
-                        timeFormat = new SimpleDateFormat("HHmmss").parse(string.substring(138, 144));
-                        csvFile.append(newDateFormat.format(dateFormat) + " " + newTimeFormat.format(timeFormat) + ";");
-                    } catch (ParseException p) {
-                        dateFormat = new Date();
-                        time = new Time(new Date().getTime());
-                        csvFile.append(newDateFormat.format(dateFormat) + " " + time.toString() + ";");
-                    }
-
-                    csvFile.append(Integer.parseInt(string.substring(156, 162)) + ";");
-
-                    numA = (string.substring(27, 37)).trim();
-                    csvFile.append(numA + ";");
-
-                    numAInter = (string.substring(75, 95)).trim();
-                    csvFile.append(numAInter + ";");
-
-                    numB = ((string.substring(48, 66)).trim()).replaceAll("F", "");
-                    //numB = numB.replaceFirst("^(860810|810|860|8)", "");
-                    csvFile.append(numB + ";");
-
-                    csvFile.append((string.substring(226, 233)).trim() + ";");
-                    csvFile.append((string.substring(233, 240)).trim() + ";");
-
-                    numA = numAInter.matches("^\\d+") ? "7" + numAInter : "7" + numA;
-                    csvFile.append(numA + ";");
-                    numB = numB.matches("^\\d+") ? (numB.length() >= countNum ? "7" + numB : "7495" + numB) : numB;
-                    csvFile.append(numB + "\n");
-                    */
                     break;
                 case "02":
                     parsing(string,
@@ -176,38 +142,6 @@ public class ParserCdrAxe {
                             48, 66,
                             233, 240,
                             240, 247);
-/*                    csvFile.append(string.substring(5, 13) + ";");
-
-                    try {
-                        dateFormat = new SimpleDateFormat("yyMMdd").parse(string.substring(132, 138));
-                        timeFormat = new SimpleDateFormat("HHmmss").parse(string.substring(138, 144));
-                        csvFile.append(newDateFormat.format(dateFormat) + " " + newTimeFormat.format(timeFormat) + ";");
-                    } catch (ParseException p) {
-                        dateFormat = new Date();
-                        time = new Time(new Date().getTime());
-                        csvFile.append(newDateFormat.format(dateFormat) + " " + time.toString() + ";");
-                    }
-
-                    csvFile.append(Integer.parseInt(string.substring(156, 162)) + ";");
-
-                    numA = (string.substring(27, 37)).trim();
-                    csvFile.append(numA + ";");
-
-                    numAInter = (string.substring(75, 95)).trim();
-                    csvFile.append(numAInter + ";");
-
-                    numB = ((string.substring(48, 66)).trim()).replaceAll("F", "");
-                    numB = numB.replaceFirst("^(860810|810|860|8)", "");
-                    csvFile.append(numB + ";");
-
-                    csvFile.append((string.substring(233, 240)).trim() + ";");
-                    csvFile.append((string.substring(240, 247)).trim() + ";");
-
-                    numA = numAInter.matches("^\\d+") ? "7" + numAInter : "7" + numA;
-                    csvFile.append(numA + ";");
-                    numB = numB.matches("^\\d+") ? (numB.length() >= countNum ? "7" + numB : "7495" + numB) : numB;
-                    csvFile.append(numB + "\n");
-*/
                     break;
                 case "04":
                     parsing(string,
@@ -219,38 +153,6 @@ public class ParserCdrAxe {
                             48, 66,
                             270, 277,
                             277, 284);
-/*                    csvFile.append(string.substring(5, 13) + ";");
-
-                    try {
-                        dateFormat = new SimpleDateFormat("yyMMdd").parse(string.substring(176, 182));
-                        timeFormat = new SimpleDateFormat("HHmmss").parse(string.substring(181, 188));
-                        csvFile.append(newDateFormat.format(dateFormat) + " " + newTimeFormat.format(timeFormat) + ";");
-                    } catch (ParseException p) {
-                        dateFormat = new Date();
-                        time = new Time(new Date().getTime());
-                        csvFile.append(newDateFormat.format(dateFormat) + " " + time.toString() + ";");
-                    }
-
-                    csvFile.append(Integer.parseInt(string.substring(200, 206)) + ";");
-
-                    numA = (string.substring(27, 37)).trim();
-                    csvFile.append(numA + ";");
-
-                    numAInter = (string.substring(76, 95)).trim();
-                    csvFile.append(numAInter + ";");
-
-                    numB = ((string.substring(48, 66)).trim()).replaceAll("F", "");
-                    numB = numB.replaceFirst("^(860810|810|860|8)", "");
-                    csvFile.append(numB + ";");
-
-                    csvFile.append((string.substring(270, 277)).trim() + ";");
-                    csvFile.append((string.substring(277, 284)).trim() + ";");
-
-                    numA = numAInter.matches("^\\d+") ? "7" + numAInter : "7" + numA;
-                    csvFile.append(numA + ";");
-                    numB = numB.matches("^\\d+") ? (numB.length() >= countNum ? "7" + numB : "7495" + numB) : numB;
-                    csvFile.append(numB + "\n");
-                    */
                     break;
                 case "09":
                     parsing(string,
@@ -262,38 +164,6 @@ public class ParserCdrAxe {
                             48, 66,
                             233, 240,
                             240, 247);
- /*                   csvFile.append(string.substring(5, 13) + ";");
-
-                    try {
-                        dateFormat = new SimpleDateFormat("yyMMdd").parse(string.substring(132, 138));
-                        timeFormat = new SimpleDateFormat("HHmmss").parse(string.substring(138, 144));
-                        csvFile.append(newDateFormat.format(dateFormat) + " " + newTimeFormat.format(timeFormat) + ";");
-                    } catch (ParseException p) {
-                        dateFormat = new Date();
-                        time = new Time(new Date().getTime());
-                        csvFile.append(newDateFormat.format(dateFormat) + " " + time.toString() + ";");
-                    }
-
-                    csvFile.append(Integer.parseInt(string.substring(156, 162)) + ";");
-
-                    numA = (string.substring(27, 37)).trim();
-                    csvFile.append(numA + ";");
-
-                    numAInter = (string.substring(75, 95)).trim();
-                    csvFile.append(numAInter + ";");
-
-                    numB = ((string.substring(48, 66)).trim()).replaceAll("F", "");
-                    numB = numB.replaceFirst("^(860810|810|860|8)", "");
-                    csvFile.append(numB + ";");
-
-                    csvFile.append((string.substring(233, 240)).trim() + ";");
-                    csvFile.append((string.substring(240, 247)).trim() + ";");
-
-                    numA = numAInter.matches("^\\d+") ? "7" + numAInter : "7" + numA;
-                    csvFile.append(numA + ";");
-                    numB = numB.matches("^\\d+") ? (numB.length() >= countNum ? "7" + numB : "7495" + numB) : numB;
-                    csvFile.append(numB + "\n");
-*/
                     break;
             }
         }
@@ -340,10 +210,10 @@ public class ParserCdrAxe {
 //Номер В начало обработки
         numB = ((string.substring(numBStart, numBEnd)).trim()).replaceAll("F", "");
         output = numAInter.matches("^(860810|860)") ?
-                numAInter.matches("^(860810)") ? "SIP_MN" : "SIP"
+                (numAInter.matches("^(860810)") ? "SIP_MN" : "SIP")
                 : (string.substring(outputStart, outputEnd)).trim();
 //Номер В конец обработки
-        numB = numB.replaceFirst("^(860810|810|860|8)", "");
+        numB = numB.replaceFirst("^(860|8)", "");
         csvFile.append(numB + ";");
 //Направление Input
         csvFile.append((string.substring(inputStart, inputEnd)).trim() + ";");
@@ -352,9 +222,12 @@ public class ParserCdrAxe {
 //Номер А, предпоследняя колонка
         numA = numAInter.matches("^\\d+") ? "7" + numAInter : "7" + numA;
         csvFile.append(numA + ";");
-//Номер В, последняя колонка
-        numB = numB.matches("^\\d+") ? (numB.length() >= countNum ? "7" + numB : "7495" + numB) : numB;
+//Номер В, последняя колонка, условие для отслеживания международных звонков
+        if (!(numB.matches("^(860810|810)"))){
+            numB = numB.matches("^\\d+") ? (numB.length() >= countNum ? "7" + numB : "7495" + numB) : numB;
+        }else {
+            numB = numB.replaceFirst("^(860810|810)", "");
+        }
         csvFile.append(numB + "\n");
     }
-
 }

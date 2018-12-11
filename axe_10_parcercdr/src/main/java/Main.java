@@ -26,9 +26,7 @@ public class Main {
         String fileOut = prop.getProperty("fileOut");
         String changeFtpDirectory = prop.getProperty("changeFtpDirectory");
         int timePeriod = Integer.parseInt(prop.getProperty("timePeriod"));
-        //Thread mainThread = Thread.currentThread();
         ParserCdrAxe parserAxe = new ParserCdrAxe();
-//        ParserCdr parserCdr = new ParserCdr();
         InputStream fileIput;
 
         //TODO Вывод данных в консоль.
@@ -59,7 +57,6 @@ public class Main {
                     //TODO парсим файл CDR в CSV
                     parserAxe.readFile(fileToProcess);
                     parserAxe.parsingString();
-//                    parserCdr.parsingString("E:\\AXE\\" + fileName);
                     fileIput = parserAxe.parsingString();
                     //TODO отправка файла
                     sendFile.ftpSend(changeFtpDirectory, fileName, fileIput);
